@@ -8,44 +8,24 @@ class window.App extends Backbone.Model
     @set 'winner', null
 
     @get('playerHand').on 'stand', =>
-      console.log('playerStand');
+      
       @get('dealerHand').dealerHit()
 
     @get('dealerHand').on 'stand', =>
-      console.log('dealerStand')
-      if @get('dealerHand').scores()[0] > @get('playerHand').scores()[0]
-        @set 'winner', 'dealer wins'
+      dealerScore = if @get('dealerHand').scores()[1] > 21 then @get('dealerHand').scores()[0] else @get('dealerHand').scores()[1]
+      playerScore = if @get('playerHand').scores()[1] > 21 then @get('playerHand').scores()[0] else @get('playerHand').scores()[1]
+      if dealerScore > playerScore
+        @set 'winner', 'You Lose!'
+      else if playerScore > dealerScore
+        @set 'winner', 'You Win!'
       else
-        @set 'winner', 'player wins'
-      @trigger('gameOver',@)
+        @set 'winner', 'Tie!'
+      @trigger('ended',@)
 
+    @get('playerHand').on 'gameOver', =>
+      @set 'winner', 'You Lose!'
+      @trigger('ended',@)
 
-
-
-    # @overMax()
-
-
-    # @get('playerHand').on 'gameOver', -> 
-    #   alert "You lose"
-
-    # @get('dealerHand').on 'gameOver', =>
-    #   dealerScore = @get('dealerHand').scores()[0]
-    #   playerScore = @get('playerHand').scores()[0]
-    #   final = Math.max(dealerScore,playerScore)
-
-      
-      
-
-    
-    # @get('dealerHand').on 'stand', =>
-    #   dealerScore = @get('dealerHand').scores()[0]
-    #   playerScore = @get('playerHand').scores()[0]
-    #   if playerScore > dealerScore
-    #     alert "You Won!"
-    #   if dealerScore < playerScore
-    #     alert "Dealer won you suck"
-    #   else
-    #     alert "meh"\
-      
-
-
+    @get('dealerHand').on 'gameOver', =>
+      @set 'winner', 'You Win!'
+      @trigger('ended',@)

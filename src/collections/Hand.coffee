@@ -38,11 +38,5 @@ class window.Hand extends Backbone.Collection
     @stand()
 
   overMax: ->
-    if @hasAce == 1
-      if @scores()[0] > 21 and @scores()[1] > 21
-        console.log('scores 0', @scores()[0])
-        @trigger('gameOver', @)
-    else
-      console.log('minscore', @minScore())
-      if @minScore() > 21
-        @trigger('gameOver', @)
+    if @scores()[0] > 21
+      @trigger('gameOver',@)
