@@ -6,9 +6,9 @@ class window.Hand extends Backbone.Collection
   hit: ->
     lastCard = @deck.pop()
     @add(lastCard)
-    lastCard
     @overMax()
-    # break
+    lastCard
+
 
   hasAce: -> @reduce (memo, card) ->
     memo or card.get('value') is 1
