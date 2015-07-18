@@ -7,6 +7,8 @@ class window.Hand extends Backbone.Collection
     lastCard = @deck.pop()
     @add(lastCard)
     lastCard
+    @overMax()
+    # break
 
   hasAce: -> @reduce (memo, card) ->
     memo or card.get('value') is 1
@@ -22,34 +24,25 @@ class window.Hand extends Backbone.Collection
     # when there is an ace, it offers you two scores - the original score, and score + 10.
     [@minScore(), @minScore() + 10 * @hasAce()]
 
-  stand: -> 
-    #player can't hit anymore, disable both buttons
-    #dealer's first card is revealed
-    @.at(0).flip()
-
-    while @scores()[1] < 17 and @scores()[0] < 17
-      @add(@deck.pop())
-    
-
+  stand: ->
     @trigger('stand',@)
-      
-    # if @
-    # while @scores() < 17 
-    #   @add(@deck.pop())
+  
+  dealerHit: -> 
+    @.at(0).flip()
+    if @hasAce == 1
+      while @scores()[1] < 17
+        @hit()
+    else 
+      while @scores()[0] < 17
+        @hit()
+    @stand()
 
-
-# var minScore = function(score, card) {
-#   reduce(score, card)
-# }
-
-# while score < 17
-#   flip card
-#   minScore(score, flippedCard)
-
-#   keeping track two scores
-#   take the smaller score
-#   when that score is greater than 17
-
-    
-# if scores of 1 = 17 or greater on flip, then compare scores and end game
-# else, scores of 0 keep flipping until 17
+  overMax: ->
+    if @hasAce == 1
+      if @scores()[0] > 21 and @scores()[1] > 21
+        console.log('scores 0', @scores()[0])
+        @trigger('gameOver', @)
+    else
+      console.log('minscore', @minScore())
+      if @minScore() > 21
+        @trigger('gameOver', @)
